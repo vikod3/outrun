@@ -1,0 +1,109 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Outrun — the new Roadster</title>
+<meta name="description" content="Roadster: Outrun — a fan concept game about the new Tesla Roadster. Not affiliated with Tesla, Inc.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 55 55" role="img" aria-label="Roadster: Outrun"%3E%3Crect width="55" height="55" rx="13" fill="#eef4f8"/%3E%3Cg transform="translate(10.5 10.5) scale(1.0625)" fill="#080808"%3E%3Cpath d="M16 7.151l3.302-4.036c0 0 5.656 0.12 11.292 2.74-1.443 2.182-4.307 3.25-4.307 3.25-0.193-1.917-1.536-2.385-5.807-2.385l-4.479 25.281-4.51-25.286c-4.24 0-5.583 0.469-5.776 2.385 0 0-2.865-1.057-4.307-3.24 5.635-2.62 11.292-2.74 11.292-2.74l3.302 4.031h-0.005zM16 1.953c4.552-0.042 9.766 0.703 15.104 3.036 0.714-1.292 0.896-1.859 0.896-1.859-5.833-2.313-11.297-3.109-16-3.13-4.703 0.021-10.167 0.813-16 3.13 0 0 0.26 0.703 0.896 1.865 5.339-2.344 10.552-3.083 15.104-3.047z"/%3E%3C/g%3E%3C/svg%3E" type="image/svg+xml">
+<link rel="apple-touch-icon" href="https://d2ol7oe51mr4n9.cloudfront.net/user_3GJaYKPxdnQG0Q9O26lu6DPmcHu/40751db3-2056-4ed3-9243-04da1895d898.png">
+<!-- CDN build: every media file on Higgsfield storage (CloudFront, CORS *), fonts from Google — README.md -->
+<meta property="og:type" content="website">
+<meta property="og:title" content="Roadster: Outrun">
+<meta property="og:description" content="Roadster: Outrun — a fan concept game about the new Tesla Roadster. Not affiliated with Tesla, Inc.">
+<meta property="og:image" content="https://d2ol7oe51mr4n9.cloudfront.net/user_3GJaYKPxdnQG0Q9O26lu6DPmcHu/474f1f18-3974-4c09-8c23-14c92320d11b.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Oxanium:wght@300;400;500&family=Inter+Tight:wght@400;500&family=Doto:ROND,wght@100,700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body data-screen="hero">
+
+<!-- hero v4 (stage 2): a ref-style header (logo tile + two buttons), a tick ring that scrubs the orbit clip from a
+     wide hover zone (sticky light, bloom, 3D tilt), and a title lockup that flies through 3D space like the
+     reference video. Everything flush to 16. The clip is a stand-in until stage 3. -->
+<section class="hero screen" data-hero>
+  <video class="hero__video" data-hero-video src="https://d2ol7oe51mr4n9.cloudfront.net/user_3GJaYKPxdnQG0Q9O26lu6DPmcHu/43096634-72ec-43f7-a7b8-a18d7e2c3c9a.mp4" poster="https://d2ol7oe51mr4n9.cloudfront.net/user_3GJaYKPxdnQG0Q9O26lu6DPmcHu/570c439d-91fe-4c23-a3c6-449e68bb467d.webp"
+         muted playsinline preload="auto" crossorigin="anonymous" aria-hidden="true"></video>
+  <div class="hero__fade" data-hero-fade aria-hidden="true"></div>   <!-- phones: the clip melts into black (gradient + blur) -->
+  <canvas class="hero__wipe" data-wipe aria-hidden="true"></canvas>
+  <div class="hero__scrim" aria-hidden="true"></div>
+
+  <header class="hero__head">
+    <span class="tile" role="img" aria-label="Tesla"><svg class="tile__logo" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><path d="M16 7.151l3.302-4.036c0 0 5.656 0.12 11.292 2.74-1.443 2.182-4.307 3.25-4.307 3.25-0.193-1.917-1.536-2.385-5.807-2.385l-4.479 25.281-4.51-25.286c-4.24 0-5.583 0.469-5.776 2.385 0 0-2.865-1.057-4.307-3.24 5.635-2.62 11.292-2.74 11.292-2.74l3.302 4.031h-0.005zM16 1.953c4.552-0.042 9.766 0.703 15.104 3.036 0.714-1.292 0.896-1.859 0.896-1.859-5.833-2.313-11.297-3.109-16-3.13-4.703 0.021-10.167 0.813-16 3.13 0 0 0.26 0.703 0.896 1.865 5.339-2.344 10.552-3.083 15.104-3.047z"/></svg></span>
+    <nav class="hero__btns" aria-label="Site"><button class="hbtn" type="button">How to play</button><button class="hbtn" type="button">Menu</button></nav>
+  </header>
+
+  <div class="ring" data-ring tabindex="0" role="slider" aria-label="Fly around the car"
+       aria-valuemin="0" aria-valuemax="360" aria-valuenow="0">
+    <div class="ring__tilt" data-ring-tilt>
+      <canvas class="ring__ticks" data-ring-ticks aria-hidden="true"></canvas>
+      <canvas class="ring__bloom" data-ring-bloom aria-hidden="true"></canvas>
+      <button class="disc" type="button" data-start disabled>Start</button>
+    </div>
+  </div>
+
+  <div class="titles">
+    <h1 class="lockup" data-title="a"><span class="lockup__sm">Tesla</span><span class="lockup__lg">Roadster<span class="lockup__ghost" aria-hidden="true">2028</span></span></h1>
+    <p class="lockup" data-title="b" aria-hidden="true"><span class="lockup__sm">Defy</span><span class="lockup__lg">Gravity</span></p>
+  </div>
+</section>
+
+<!-- the game (stage 1) · UI v5: SpaceX-style telemetry in the hero's language (lib/game/telemetry.js, hud.js) — the
+     hero header, two tick gauges and a mission timeline at the bottom centre, a 3D callout on each phase — and a Busted
+     screen built on the hero's own layout: a giant lockup bottom left, a tick ring with a disc on the right. -->
+<main class="game screen" data-game data-status="ready">
+  <canvas class="game__canvas" data-game-canvas aria-label="Outrun: jump the police cars"></canvas>
+  <div class="game__scrim" aria-hidden="true"></div>
+
+  <div class="telemetry" data-telemetry>
+    <canvas class="telemetry__ticks" data-tele-ticks aria-hidden="true"></canvas>
+    <canvas class="telemetry__bloom" data-tele-bloom aria-hidden="true"></canvas>
+    <p class="gauge gauge--speed"><span class="dots" data-speed>000</span><span class="caption">mph</span></p>
+    <p class="gauge gauge--alt"><span class="dots" data-alt>000</span><span class="caption">ft</span></p>
+    <p class="timeline__dist dots" data-dist-at><span data-dist>0</span><small>m</small></p>
+    <ol class="timeline__nodes">
+      <li class="caption" data-node="0" data-state="now">Blue hour</li>
+      <li class="caption" data-node="1">Night</li>
+      <li class="caption" data-node="2">Chase</li>
+      <li class="caption" data-node="3" data-best>Best —</li>
+    </ol>
+    <p class="timeline__clock"><span class="timeline__t" data-clock-t>T−</span><span class="dots" data-clock>00:00</span><span class="caption timeline__hint"><span class="k">Press <b>Space</b> to launch · hold to fly</span><span class="t"><b>Tap</b> to launch · hold to fly</span></span></p>
+  </div>
+
+  <div class="callouts" aria-live="polite">
+    <p class="lockup callout" data-callout><span class="lockup__sm" data-callout-sm>Phase 02</span><span class="lockup__lg" data-callout-lg>Night</span></p>
+  </div>
+
+  <div class="pause-note"><p class="pause-note__title">Paused</p><p class="caption"><span class="k">Esc or Space to resume</span><span class="t">Tap to resume</span></p></div>
+
+  <section class="busted" role="dialog" aria-label="Busted" data-busted>
+    <h2 class="lockup busted__title" data-bust-title><span class="lockup__sm" data-bust-phase>Phase 01 · Blue hour</span><span class="lockup__lg">Busted</span></h2>
+    <div class="ring busted__ring">
+      <div class="ring__tilt" data-bust-ring>
+        <canvas class="ring__ticks" data-bust-ticks aria-hidden="true"></canvas>
+        <canvas class="ring__bloom" data-bust-bloom aria-hidden="true"></canvas>
+        <button class="disc" type="button" data-restart disabled>Restart</button>
+      </div>
+    </div>
+    <dl class="busted__stats">
+      <div data-bust-in><dt class="caption">Distance</dt><dd class="dots"><span data-stat="dist">0</span><small>m</small></dd></div>
+      <div data-bust-in><dt class="caption">Top speed</dt><dd class="dots"><span data-stat="mph">0</span><small>mph</small></dd></div>
+      <div data-bust-in><dt class="caption">Max altitude</dt><dd class="dots"><span data-stat="alt">0</span><small>ft</small></dd></div>
+      <div data-bust-in><dt class="caption">Flight time</dt><dd class="dots" data-stat="time">00:00</dd></div>
+    </dl>
+    <p class="caption busted__best" data-bust-in data-bust-best>Best —</p>
+  </section>
+
+  <header class="game__head">
+    <span class="tile" role="img" aria-label="Tesla"><svg class="tile__logo" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><path d="M16 7.151l3.302-4.036c0 0 5.656 0.12 11.292 2.74-1.443 2.182-4.307 3.25-4.307 3.25-0.193-1.917-1.536-2.385-5.807-2.385l-4.479 25.281-4.51-25.286c-4.24 0-5.583 0.469-5.776 2.385 0 0-2.865-1.057-4.307-3.24 5.635-2.62 11.292-2.74 11.292-2.74l3.302 4.031h-0.005zM16 1.953c4.552-0.042 9.766 0.703 15.104 3.036 0.714-1.292 0.896-1.859 0.896-1.859-5.833-2.313-11.297-3.109-16-3.13-4.703 0.021-10.167 0.813-16 3.13 0 0 0.26 0.703 0.896 1.865 5.339-2.344 10.552-3.083 15.104-3.047z"/></svg></span>
+    <nav class="game__btns" aria-label="Game"><button class="hbtn" type="button" data-pause disabled>Pause</button><button class="hbtn" type="button" data-menu>Menu</button></nav>
+  </header>
+</main>
+
+<script type="module" src="main.js"></script>
+</body>
+</html>

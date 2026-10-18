@@ -1,0 +1,406 @@
+/* new-17 site styles. Tokens: tokens.css (design system v2 — Fibonacci lengths, φ opacities, two families). */
+@import url('tokens.css');
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { height: 100%; }
+body {
+  background: var(--void); color: var(--ink-2); overflow: hidden;
+  font: 400 var(--t-body) / var(--lh-body) var(--font-sans); letter-spacing: var(--tr-body);
+  -webkit-font-smoothing: antialiased; user-select: none; -webkit-user-select: none;
+}
+button { font: inherit; color: inherit; background: none; border: 0; cursor: pointer; }
+em, i, b, cite, dfn, var, address { font-style: normal; }
+b { font-weight: 500; color: var(--ink-1); }
+h1, h2, h3, p { font-weight: 400; }
+
+/* ─────────── type (v2: five sizes) ─────────── */
+.display { font-size: var(--t-display); line-height: var(--lh-display); letter-spacing: var(--tr-display); color: var(--ink-1); }
+.body    { font-size: var(--t-body); line-height: var(--lh-body); letter-spacing: var(--tr-body); color: var(--ink-2); }
+.caption { font-size: var(--t-small); line-height: var(--lh-small); letter-spacing: var(--tr-small); color: var(--ink-3); }
+.dots {
+  font-family: var(--font-dots); font-weight: 700; font-variation-settings: "ROND" 100;
+  font-variant-numeric: tabular-nums; line-height: 1; letter-spacing: 0; color: var(--ink-1);
+}
+.dots small {
+  font-family: var(--font-sans); font-variation-settings: normal; font-weight: 400;
+  font-size: var(--t-small); color: var(--ink-3); margin-left: var(--f8);
+}
+.dots--34 { font-size: var(--t-heading); }
+.dots--89 { font-size: var(--t-title); }
+
+/* ─────────── surfaces and buttons (v2: fill only, no edges) ─────────── */
+.glass { background: var(--glass); -webkit-backdrop-filter: var(--glass-filter); backdrop-filter: var(--glass-filter); }
+.btn {
+  display: inline-flex; align-items: center; justify-content: center;
+  height: var(--btn-h); min-width: var(--btn-w); padding: 0 var(--f34); border-radius: var(--r-btn);
+  font-size: var(--t-small); line-height: 1; font-weight: 500; letter-spacing: 0;
+  transition: background-color var(--dur-press) var(--ease-expo), color var(--dur-press) var(--ease-expo), scale var(--dur-press) var(--ease-expo);
+}
+.btn:active { scale: .98; }
+.btn--primary { background: var(--fg); color: var(--void); }
+.btn--primary:hover { background: #fff; }
+.btn--text { min-width: 0; padding: 0 var(--f21); color: var(--ink-2); }
+.btn--text:hover { color: var(--ink-1); }
+
+/* ─────────── hero v4 (stage 2) — header after the user's ref, a sticky glowing tick ring, a 3D flying title lockup.
+   Everything flush to --edge (16). ─────────── */
+.hero { position: fixed; inset: 0; overflow: hidden; background: var(--void); }
+.hero__video { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+.hero__fade { display: none; }
+.hero__scrim {
+  position: absolute; inset: 0; pointer-events: none;
+  background: linear-gradient(180deg, rgba(8, 8, 8, .618) 0%, rgba(8, 8, 8, 0) 21%, rgba(8, 8, 8, 0) 61.8%, rgba(8, 8, 8, .618) 100%);
+}
+
+/* header: a square logo tile and two smaller buttons (no action yet) */
+.hero__head, .game__head {   /* one header for both screens, in the same spot: across the launch cut it reads as one */
+  position: absolute; inset: var(--edge) var(--edge) auto; z-index: 2;
+  display: flex; align-items: center; justify-content: space-between; pointer-events: none;
+}
+.hero__head > *, .game__head > * { pointer-events: auto; }
+.tile {
+  display: grid; place-items: center; width: var(--f55); height: var(--f55); border-radius: var(--r-panel);
+  background: var(--fg); color: var(--void);
+  font-family: var(--font-display); font-weight: 500; font-size: var(--t-heading); line-height: 1;
+}
+.tile__logo { display: block; width: var(--f34); height: var(--f34); color: var(--void); }   /* the Tesla mark (assets/ui/tesla-logo.svg), black on the white tile */
+.hero__btns, .game__btns { display: flex; gap: var(--f5); }
+.hbtn {
+  height: var(--f34); padding: 0 var(--f21); border-radius: var(--f8);
+  background: rgba(238, 244, 248, .854); -webkit-backdrop-filter: var(--glass-filter); backdrop-filter: var(--glass-filter);
+  color: var(--void); font-family: var(--font-sans); font-size: var(--t-small); font-weight: 500; line-height: 1;
+  transition: background-color var(--dur-press) var(--ease-expo), scale var(--dur-press) var(--ease-expo);
+}
+.hbtn:hover { background: #fff; }
+.hbtn:active { scale: .98; }
+.hbtn:disabled { opacity: .382; cursor: default; }
+.hbtn:disabled:hover { background: rgba(238, 244, 248, .854); }
+.hbtn:disabled:active { scale: 1; }
+
+/* the tick ring: a Ø 610 hover zone around a Ø 377 ring (445 drawing box), centred in the right golden column */
+.ring {
+  position: absolute; z-index: 1; width: calc(var(--u) * 610); height: calc(var(--u) * 610); border-radius: 50%;
+  left: calc(80.9vw - var(--edge) / 2 - var(--u) * 305); top: calc(38.2% - var(--u) * 305); touch-action: none;
+}
+.ring:focus-visible { outline: none; }
+.ring__tilt {
+  position: absolute; left: 50%; top: 50%; width: calc(var(--u) * 678); height: calc(var(--u) * 678);   /* the Ø 610 zone + 34 pad */
+  margin: calc(var(--u) * -339) 0 0 calc(var(--u) * -339);
+}
+.ring__tilt::before {   /* a soft darkening so the ticks read over any frame */
+  content: ""; position: absolute; inset: calc(var(--u) * 95); border-radius: 50%; pointer-events: none;   /* around the Ø 377 ring */
+  background: radial-gradient(closest-side, rgba(8, 8, 8, .382), rgba(8, 8, 8, 0));
+}
+.ring__ticks, .ring__bloom { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; }
+.ring__bloom { filter: blur(calc(var(--u) * 34)); mix-blend-mode: plus-lighter; }   /* additive, sweeping light on top of the ticks */
+@supports not (mix-blend-mode: plus-lighter) { .ring__bloom { mix-blend-mode: screen; } }
+.disc {
+  position: absolute; left: 50%; top: 50%; width: var(--disc); height: var(--disc); border-radius: 50%;
+  transform: translate(-50%, -50%);
+  background: var(--ink-5); -webkit-backdrop-filter: var(--glass-filter); backdrop-filter: var(--glass-filter);
+  font-family: var(--font-display); font-size: var(--t-body); font-weight: 500; letter-spacing: var(--tr-label);
+  text-transform: uppercase; color: var(--ink-1);
+  transition: background-color var(--dur-press) var(--ease-expo), color var(--dur-press) var(--ease-expo), scale var(--dur-press) var(--ease-expo), opacity var(--dur-press) var(--ease-expo);
+}
+.disc:hover { background: var(--fg); color: var(--void); }
+.disc:active { scale: .98; }
+.disc:disabled { opacity: .382; cursor: default; }
+.disc:disabled:hover { background: var(--ink-5); color: var(--ink-1); }
+
+/* the title lockups: small 55 over big 144 (MUSTANG / FASTBACK), flying through 3D space (lib/titles.js writes --e) */
+.titles { position: absolute; left: var(--edge); bottom: var(--edge); perspective: calc(var(--u) * 987); perspective-origin: 0 100%; pointer-events: none; }
+.lockup {
+  display: grid; justify-items: start; margin: 0; transform-origin: 0 50%;
+  font-family: var(--font-display); text-transform: uppercase; color: var(--ink-1);
+}
+.lockup + .lockup { position: absolute; left: 0; bottom: 0; }
+.lockup__sm { font-weight: 400; font-size: var(--t-display); line-height: 1; letter-spacing: var(--tr-wordmark); margin-bottom: var(--f13); }
+.lockup__lg {
+  position: relative; white-space: nowrap; margin-bottom: -.082em;   /* the letters sit on the 16 edge */
+  font-weight: 300; font-size: var(--t-giant); line-height: var(--lh-giant); letter-spacing: var(--tr-giant);
+}
+.lockup__ghost { position: absolute; left: calc(100% + var(--f34)); bottom: 0; color: var(--ink-6); }
+[data-title="a"] {   /* exits: swings up-left and away */
+  transform: translate3d(calc(var(--e, 0) * -89 * var(--u)), calc(var(--e, 0) * -233 * var(--u)), calc(var(--e, 0) * -377 * var(--u)))
+             rotateX(calc(var(--e, 0) * 34deg)) rotateY(calc(var(--e, 0) * -55deg));
+}
+[data-title="b"] {   /* enters: from huge and tilted at the upper left, close to the camera */
+  opacity: 0;
+  transform: translate3d(calc(var(--e, 1) * -55 * var(--u)), calc(var(--e, 1) * -377 * var(--u)), calc(var(--e, 1) * 377 * var(--u)))
+             rotateX(calc(var(--e, 1) * -34deg)) rotateY(calc(var(--e, 1) * 21deg));
+}
+
+/* ─────────── the site cursor (lib/cursor.js): a 34 white circle, difference blend; ×1.618 over buttons, .8 pressed ─────────── */
+.has-cursor, .has-cursor * { cursor: none !important; }
+.cursor {
+  position: fixed; left: 0; top: 0; z-index: 99; pointer-events: none;
+  mix-blend-mode: difference; opacity: 0; transition: opacity var(--dur-press) var(--ease-expo);
+}
+.cursor.is-on { opacity: 1; }
+.cursor::before {
+  content: ""; position: absolute; left: calc(var(--f34) / -2); top: calc(var(--f34) / -2);
+  width: var(--f34); height: var(--f34); border-radius: 50%; background: var(--fg);
+  transition: scale var(--dur-press) var(--ease-expo);
+}
+.cursor.is-hover::before { scale: 1.618; }
+.cursor.is-down::before { scale: .8; }
+.cursor.is-hover.is-down::before { scale: 1.3; }
+
+/* ─────────── screens: Start blurs the hero out and the game in; Menu runs it back ─────────── */
+.screen { transition: opacity var(--dur-in) var(--ease-expo), filter var(--dur-in) var(--ease-expo), transform var(--dur-in) var(--ease-expo); }
+[data-screen="game"] .hero { opacity: 0; filter: blur(var(--f21)); transform: scale(1.055); pointer-events: none; }
+[data-screen="hero"] .game { opacity: 0; filter: blur(var(--f21)); transform: scale(.97); pointer-events: none; }
+body:not(.is-anim)[data-screen="game"] .hero,
+body:not(.is-anim)[data-screen="hero"] .game { visibility: hidden; }   /* not rendered at rest: the blur keeps no surface alive */
+/* launch (START, stage 8): the dive (lib/wipe.js) sits over the clip, under the hero UI, and pulls the clip's frame
+   toward the Roadster, then opens the game's from it; the hero UI flies past the camera on an ease-in over .45 s (the
+   ring grows through us, the lockup rushes off to the lower left, the header simply goes); at the end the screens cut
+   (is-cut: no crossfade, the dive's last frame is the game) and the game's header and telemetry arrive in steps */
+.hero__wipe {   /* fades in over .2 s so a sub-percent difference between the GL frame and the compositor's video never steps */
+  position: absolute; inset: 0; width: 100%; height: 100%; visibility: hidden; opacity: 0;
+  transition: opacity .2s var(--ease-expo), visibility 0s .2s;
+}
+.is-launch .hero__wipe { visibility: visible; opacity: 1; transition: opacity .2s var(--ease-expo); }
+.hero__scrim, .hero__head, .hero .ring, .titles {
+  transition: opacity var(--dur-in) var(--ease-expo), filter var(--dur-in) var(--ease-expo), transform var(--dur-in) var(--ease-expo);
+}
+.is-launch .hero__scrim, .is-launch .hero__head, .is-launch .hero .ring, .is-launch .titles {
+  opacity: 0; filter: blur(var(--f13)); pointer-events: none;
+  transition: opacity .45s var(--ease-in), filter .45s var(--ease-in), transform .45s var(--ease-in);
+}
+.is-launch .hero__head { transition-duration: .25s; }
+.is-launch .hero .ring { transform: scale(2.2); }                        /* we fly through the ring */
+.is-launch .titles { transform: translate(-8%, 6%) scale(1.6); }        /* the lockup rushes past to the lower left */
+.is-cut .screen { transition: none; }
+.game__head { transition: opacity .61s var(--ease-expo), filter .61s var(--ease-expo); }
+.telemetry { transition: opacity .61s var(--ease-expo) var(--stagger), filter .61s var(--ease-expo) var(--stagger), transform .61s var(--ease-expo) var(--stagger); }
+.is-launch .game__head, .is-launch .telemetry { opacity: 0; filter: blur(var(--f13)); }   /* they arrive in steps after the cut */
+.is-launch .telemetry { transform: translateY(var(--f34)); }
+
+/* ─────────── the game screen · UI v5 "SpaceX telemetry" (lib/game/telemetry.js draws, hud.js writes) ─────────── */
+.game { position: fixed; inset: 0; overflow: hidden; background: var(--void); }
+.game__canvas { position: absolute; inset: 0; width: 100%; height: 100%; display: block; cursor: pointer; touch-action: none; transition: opacity var(--dur-press) var(--ease-expo); }
+.game__scrim {   /* Busted only: the hero's scrim, so the lockup and the ring read over the crash */
+  position: absolute; inset: 0; pointer-events: none; opacity: 0; transition: opacity .377s var(--ease-expo);
+  background: linear-gradient(180deg, rgba(8, 8, 8, .382) 0%, rgba(8, 8, 8, 0) 21%, rgba(8, 8, 8, 0) 50%, rgba(8, 8, 8, .618) 100%);
+}
+
+/* the cluster: SPEED Ø 144 · 34 · the timeline 610 · 34 · ALTITUDE Ø 144 = 966, on the road band below the ground line.
+   Positions mirror GEO in telemetry.js (units: design px). */
+.telemetry {
+  position: absolute; left: 50%; bottom: var(--edge); width: calc(var(--u) * 966); height: var(--f144);
+  margin-left: calc(var(--u) * -483); pointer-events: none;
+}
+.telemetry::before {   /* one soft darkening under the cluster so the ticks read over any plate (no card, no glass) */
+  content: ""; position: absolute; inset: calc(var(--u) * -55) calc(var(--u) * -144); pointer-events: none;
+  background: radial-gradient(closest-side, rgba(8, 8, 8, .382), rgba(8, 8, 8, 0));
+}
+.telemetry__ticks, .telemetry__bloom {
+  position: absolute; left: calc(var(--u) * -34); top: calc(var(--u) * -34);
+  width: calc(100% + var(--u) * 68); height: calc(100% + var(--u) * 68);
+}
+.telemetry__bloom { filter: blur(var(--f13)); mix-blend-mode: plus-lighter; }
+@supports not (mix-blend-mode: plus-lighter) { .telemetry__bloom { mix-blend-mode: screen; } }
+.gauge {
+  position: absolute; top: 0; width: var(--f144); height: var(--f144);
+  display: grid; place-content: center; justify-items: center; gap: var(--f5);
+}
+.gauge--speed { left: 0; }
+.gauge--alt { right: 0; }
+.gauge .dots { font-size: var(--t-heading); }
+.gauge .caption { line-height: 1; }
+.timeline__dist {   /* rides the head tick (hud.js writes --x), like the ring's 000° */
+  position: absolute; left: 0; top: calc(var(--u) * 37); white-space: nowrap; font-size: var(--t-body);
+  transform: translate(calc(var(--u) * var(--x, 178) - 50%), -100%);
+}
+.timeline__nodes { list-style: none; position: absolute; left: 0; top: calc(var(--u) * 89); }
+.timeline__nodes li {
+  position: absolute; top: 0; white-space: nowrap; line-height: 1; color: var(--ink-3);   /* coming: the caption ink */
+  transition: color .377s var(--ease-expo);
+}
+.timeline__nodes [data-node="0"] { left: calc(var(--u) * 178); }
+.timeline__nodes [data-node="1"] { left: calc(var(--u) * 381.3); transform: translateX(-50%); }
+.timeline__nodes [data-node="2"] { left: calc(var(--u) * 584.7); transform: translateX(-50%); }
+.timeline__nodes [data-node="3"] { left: calc(var(--u) * 788); transform: translateX(-100%); }
+.timeline__nodes [data-state="past"] { color: var(--ink-2); }
+.timeline__nodes [data-state="now"], .timeline__nodes [data-state="beat"] { color: var(--ink-1); }
+.timeline__clock {
+  position: absolute; left: calc(var(--u) * 178); width: var(--f610); bottom: 0;
+  display: flex; justify-content: center; align-items: baseline; gap: var(--f8); white-space: nowrap;
+}
+.timeline__t { font-family: var(--font-display); font-size: var(--t-small); letter-spacing: var(--tr-label); color: var(--ink-3); }
+.timeline__clock .dots { font-size: var(--t-body); }
+.timeline__hint { margin-left: var(--f13); font-size: var(--t-body); line-height: 1; color: var(--ink-2); }   /* READY's call to action: body size, not a caption */
+.game:not([data-status="ready"]) .timeline__hint, .game[data-status="ready"] .timeline__dist { display: none; }
+.dots .colon { font-family: var(--font-display); font-weight: 300; font-variation-settings: normal; color: var(--ink-3); margin: 0 .08em; }
+
+/* the phase callout: a lockup flying through 3D like the hero's, mirrored into the free sky at the upper right.
+   hud.js writes --e (entering: 1 → 0), --o (leaving: 0 → 1), opacity and blur from world.phaseSteps. */
+.callouts {
+  position: absolute; right: var(--edge); top: calc(var(--edge) + var(--f55) + var(--f34));
+  perspective: calc(var(--u) * 987); perspective-origin: 100% 0; pointer-events: none;
+}
+.callout {
+  justify-items: end; transform-origin: 100% 50%; opacity: 0; visibility: hidden;
+  transform: translate3d(calc(var(--e, 1) * 55 * var(--u)), calc(var(--e, 1) * -144 * var(--u)), calc(var(--e, 1) * 377 * var(--u)))
+             rotateX(calc(var(--e, 1) * -34deg)) rotateY(calc(var(--e, 1) * -21deg))
+             translate3d(calc(var(--o, 0) * 89 * var(--u)), calc(var(--o, 0) * -233 * var(--u)), calc(var(--o, 0) * -377 * var(--u)))
+             rotateX(calc(var(--o, 0) * 34deg)) rotateY(calc(var(--o, 0) * 55deg));
+}
+.callout .lockup__sm { font-size: var(--t-body); letter-spacing: var(--tr-label); margin-bottom: var(--f8); }
+.callout .lockup__lg { font-size: var(--t-title); margin-bottom: 0; }
+
+.pause-note {
+  position: absolute; left: 50%; top: 38.2%; display: grid; justify-items: center; gap: var(--f13); pointer-events: none;
+  transform: translate(-50%, -50%) translateY(var(--in-y)); opacity: 0; filter: blur(var(--in-blur));
+}
+.pause-note__title {
+  font-family: var(--font-display); font-weight: 300; text-transform: uppercase;
+  font-size: var(--t-display); line-height: 1; letter-spacing: var(--tr-wordmark); color: var(--ink-1);
+}
+
+/* Busted v2: the hero's layout — the lockup bottom left, the ring + disc in the right golden column, the summary
+   under it. hud.js drives the entrance from the game's steps (the title flies in like hero B, the ring fills to
+   distance / best, the summary staggers in); Restart is the START disc, enabled at RESTART_LOCK. */
+.busted { position: absolute; inset: 0; visibility: hidden; pointer-events: none; perspective: calc(var(--u) * 987); perspective-origin: 0 100%; }
+.busted__title {
+  position: absolute; left: var(--edge); bottom: var(--edge); opacity: 0;
+  transform: translate3d(calc(var(--e, 1) * -55 * var(--u)), calc(var(--e, 1) * -377 * var(--u)), calc(var(--e, 1) * 377 * var(--u)))
+             rotateX(calc(var(--e, 1) * -34deg)) rotateY(calc(var(--e, 1) * 21deg));
+}
+.busted__ring .disc { pointer-events: auto; }
+.busted__stats {
+  position: absolute; left: calc(80.9vw - var(--edge) / 2 - var(--u) * 233); width: calc(var(--u) * 466);
+  top: calc(38.2% + var(--u) * 233); display: grid; grid-template-columns: repeat(4, 1fr); gap: var(--f21);
+}
+.busted__stats div { display: grid; gap: var(--f8); justify-items: center; }
+.busted__stats dd { font-size: var(--t-body); white-space: nowrap; }
+.busted__best {
+  position: absolute; left: calc(80.9vw - var(--edge) / 2 - var(--u) * 233); width: calc(var(--u) * 466);
+  top: calc(38.2% + var(--u) * 322); text-align: center;
+}
+.busted__best.is-new { color: var(--ink-1); }
+[data-bust-in] { opacity: 0; }
+
+/* status-driven visibility */
+.game[data-status="paused"] .game__canvas { opacity: .382; }
+.game[data-status="paused"] .pause-note {
+  opacity: 1; filter: blur(0); transform: translate(-50%, -50%);
+  transition: opacity .377s var(--ease-expo), filter .377s var(--ease-expo), transform .377s var(--ease-expo);
+}
+.game[data-status="busted"] .game__scrim { opacity: 1; }
+.game[data-status="busted"] .telemetry { opacity: 0; filter: blur(var(--f13)); transition-duration: .377s; }
+.game[data-status="busted"] .busted { visibility: visible; }
+.game:not([data-status="busted"]) .busted {   /* Restart: everything leaves in 233 ms */
+  opacity: 0; filter: blur(var(--f8));
+  transition: opacity .233s var(--ease-expo), filter .233s var(--ease-expo), visibility 0s .233s;
+}
+
+/* ─────────── stage 9 · phones ───────────
+   Touch: key prompts swap for touch prompts; no double-tap zoom, no callouts. Both phone ranges: the notch and the
+   home indicator are kept clear, and the header keeps thumb-sized targets. Portrait re-composes each screen; short
+   landscape keeps the desktop composition, scaled by height (tokens.css). */
+.t { display: none; }
+@media (hover: none) and (pointer: coarse) {
+  .k { display: none; }
+  .t { display: inline; }
+  button { touch-action: manipulation; }
+  body { -webkit-touch-callout: none; -webkit-tap-highlight-color: transparent; }
+}
+@media (max-width: 767px) and (orientation: portrait), (max-height: 520px) and (orientation: landscape) {
+  .hero__head, .game__head {
+    inset: max(var(--edge), env(safe-area-inset-top)) max(var(--edge), env(safe-area-inset-right)) auto max(var(--edge), env(safe-area-inset-left));
+  }
+  .tile { width: max(40px, var(--f55)); height: max(40px, var(--f55)); border-radius: max(10px, var(--r-panel)); }
+  .tile__logo { width: max(24px, var(--f34)); height: max(24px, var(--f34)); }
+  .hbtn { height: max(34px, var(--f34)); padding: 0 max(14px, var(--f21)); }
+  .titles, .busted__title { left: max(var(--edge), env(safe-area-inset-left)); bottom: max(var(--edge), env(safe-area-inset-bottom)); }
+  .callouts { right: max(var(--edge), env(safe-area-inset-right)); top: calc(max(var(--edge), env(safe-area-inset-top)) + max(40px, var(--f55)) + max(13px, var(--f34))); }
+}
+
+/* short landscape: the instruments and the Busted summary get their own, larger design pixel so the text floors fit */
+@media (max-height: 520px) and (orientation: landscape) {
+  .telemetry {
+    --u: calc(100dvh / 700);
+    width: calc(var(--u) * 966); height: calc(var(--u) * 144); margin-left: calc(var(--u) * -483);
+    bottom: max(calc(var(--u) * 16), env(safe-area-inset-bottom));
+  }
+  .gauge { width: calc(var(--u) * 144); height: calc(var(--u) * 144); }
+  .timeline__clock { width: calc(var(--u) * 610); }
+  .busted__stats, .busted__best { --u: calc(100dvh / 600); }
+  .busted__stats { left: calc(80.9vw - var(--edge) / 2 - var(--u) * 233); width: calc(var(--u) * 466); top: calc(38.2% + var(--u) * 210); }
+  .busted__best { left: calc(80.9vw - var(--edge) / 2 - var(--u) * 233); width: calc(var(--u) * 466); top: calc(38.2% + var(--u) * 300); }
+}
+
+@media (max-width: 767px) and (orientation: portrait) {
+  /* the clip: centred, 30 % smaller (the top 70 % of the screen, cover-fit), melting into black at its foot through a
+     gradient and a blur; lib/wipe.js reads this box and the fade so the launch starts exactly on it */
+  .hero__video { inset: 0 0 auto 0; height: 70%; object-position: 50% 50%; }
+  .hero__fade {
+    display: block; position: absolute; left: 0; right: 0; top: 42%; height: 28%; pointer-events: none;
+    background: linear-gradient(180deg, rgba(8, 8, 8, 0), var(--void));
+    -webkit-backdrop-filter: blur(var(--f13)); backdrop-filter: blur(var(--f13));
+    -webkit-mask-image: linear-gradient(180deg, transparent, #000 55%); mask-image: linear-gradient(180deg, transparent, #000 55%);
+  }
+
+  /* the ring: centred, a little smaller (its own design pixel), START inside */
+  .hero .ring {
+    --u: calc(100vw / 520);
+    left: calc(50% - var(--u) * 305); top: calc(42% - var(--u) * 305);
+  }
+  .hero .ring .disc { width: calc(var(--u) * 144); height: calc(var(--u) * 144); }
+
+  /* the lockups: bottom left, sized to the width (ROADSTER fits), the ghost year off */
+  .titles { --u: calc(100vw / 800); perspective: calc(var(--u) * 987); }
+  .titles .lockup__sm { font-size: calc(var(--u) * 55); margin-bottom: calc(var(--u) * 13); }
+  .titles .lockup__lg { font-size: calc(var(--u) * 144); }
+  .lockup__ghost { display: none; }
+
+  /* the telemetry: two rows — the gauges at the sides with the clock between them, the mission timeline across the
+     width under them. Positions mirror GEO.mob in lib/game/telemetry.js (units: --tu, 1/398 of the box) */
+  .telemetry {
+    --tu: calc((100vw - 2 * var(--edge)) / 398);
+    left: var(--edge); margin-left: 0; width: calc(var(--tu) * 398); height: calc(var(--tu) * 226);
+    bottom: calc(var(--edge) + env(safe-area-inset-bottom));
+  }
+  .telemetry::before { inset: calc(var(--tu) * -34) calc(var(--tu) * -21); }
+  .telemetry__ticks, .telemetry__bloom {
+    left: calc(var(--tu) * -34); top: calc(var(--tu) * -34);
+    width: calc(100% + var(--tu) * 68); height: calc(100% + var(--tu) * 68);
+  }
+  .gauge { width: calc(var(--tu) * 120); height: calc(var(--tu) * 120); }
+  .gauge .dots { font-size: max(18px, calc(var(--tu) * 30)); }
+  .timeline__dist { top: calc(var(--tu) * 128); transform: translate(calc(var(--tu) * var(--x, 0) - 50%), -100%); font-size: var(--t-body); }
+  .timeline__nodes { top: calc(var(--tu) * 182); }
+  .timeline__nodes [data-node="0"] { left: 0; }
+  .timeline__nodes [data-node="1"] { left: calc(var(--tu) * 132.7); }
+  .timeline__nodes [data-node="2"] { left: calc(var(--tu) * 265.3); }
+  .timeline__nodes [data-node="3"] { left: calc(var(--tu) * 398); }
+  .timeline__clock {
+    left: calc(var(--tu) * 120); width: calc(var(--tu) * 158); bottom: auto; top: calc(var(--tu) * 34);
+    flex-direction: column; align-items: center; gap: calc(var(--tu) * 5);
+  }
+  .timeline__hint { margin: calc(var(--tu) * 8) 0 0; font-size: var(--t-small); white-space: normal; text-align: center; line-height: 1.382; }
+
+  /* the callout: the same flight, smaller */
+  .callouts { --u: calc(100vw / 640); perspective: calc(var(--u) * 987); }
+  .callout .lockup__lg { font-size: calc(var(--u) * 89); }
+
+  .pause-note__title { font-size: var(--f34); }
+
+  /* Busted: the ring centred high, the summary as a 2 × 2 grid under it, the lockup at the bottom */
+  .busted__title { --u: calc(100vw / 640); }
+  .busted__title .lockup__sm { font-size: calc(var(--u) * 44); margin-bottom: calc(var(--u) * 13); }
+  .busted__title .lockup__lg { font-size: calc(var(--u) * 144); }
+  .busted__ring {   /* above the road (the field's ground line is at 58 %) */
+    --u: calc(100vw / 520);
+    left: calc(50% - var(--u) * 305); top: calc(28% - var(--u) * 305);
+  }
+  .busted__ring .disc { width: calc(var(--u) * 144); height: calc(var(--u) * 144); }
+  .busted__stats {   /* below the road, on the dark floor, clear of the crash */
+    left: var(--edge); width: calc(100vw - 2 * var(--edge)); top: 63%;
+    grid-template-columns: repeat(2, 1fr); row-gap: var(--f21);
+  }
+  .busted__best { left: var(--edge); width: calc(100vw - 2 * var(--edge)); top: calc(63% + var(--f144)); }
+}
+

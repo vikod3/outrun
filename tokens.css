@@ -1,0 +1,104 @@
+/* new-17 · Roadster: Outrun — design tokens v3 (a technical instrument: Oxanium display, tick ring, ghost type)
+   Base: the luxury-mono preset (one family, two weights, no mono, no caps labels, no strokes, no shadows),
+   the OCTO colour ramp. Type is solid (the title gradient was dropped on 2026-10-17). Desktop only, frame 1470×956.
+   Every design value is a Fibonacci number of design pixels: 1 · 5 · 8 · 13 · 21 · 34 · 55 · 89 · 144 · 233 · 377 · 610.
+   Opacities are powers of φ: 1 · .618 · .382 · .236 · .146. No italic anywhere. */
+
+:root {
+  --u: clamp(.85px, 100vw / 1470, 1.3px);   /* one design pixel */
+
+  /* — Fibonacci space — */
+  --f5:   calc(var(--u) * 5);
+  --f8:   calc(var(--u) * 8);
+  --f13:  calc(var(--u) * 13);
+  --f21:  calc(var(--u) * 21);
+  --f34:  calc(var(--u) * 34);
+  --f55:  calc(var(--u) * 55);
+  --f89:  calc(var(--u) * 89);
+  --f144: calc(var(--u) * 144);
+  --f233: calc(var(--u) * 233);
+  --f377: calc(var(--u) * 377);
+  --f610: calc(var(--u) * 610);
+
+  /* — colour: the OCTO ramp — */
+  --void:  #080808;
+  --night: #0a0f13;
+  --abyss: #152832;
+  --deep:  #2a556c;
+  --steel: #4f86a5;
+  --sky:   #7eb0cb;
+  --mist:  #abcee2;
+  --ice:   #cfe2ef;
+  --fg:    #eef4f8;
+  --signal: #ff2a3d;   /* in-game only: tail lights, police, crash flash. Never in UI chrome. */
+
+  --horizon: linear-gradient(180deg,
+    #080808 0%, #080808 40%, #0a0f13 44%, #152832 52%, #2a556c 61%,
+    #4f86a5 70%, #7eb0cb 78%, #abcee2 87%, #cfe2ef 100%);
+
+  /* — ink: fg at powers of φ — */
+  --ink-1: #eef4f8;
+  --ink-2: rgba(238, 244, 248, .618);   /* body, nav */
+  --ink-3: rgba(238, 244, 248, .382);   /* captions */
+  --ink-4: rgba(238, 244, 248, .236);
+  --ink-5: rgba(238, 244, 248, .146);   /* glass fills, the HUD accents */
+  --ink-6: rgba(238, 244, 248, .09);    /* ghost headings (.146 × .618) */
+
+  /* — glass: fill + blur, no edge — */
+  --glass: rgba(8, 8, 8, .382);
+  --glass-filter: blur(calc(var(--u) * 21)) saturate(1.382);
+
+  /* — type: two families, five sizes, each step ×φ — */
+  --font-display: 'Oxanium', 'Inter Tight', sans-serif;  /* v3: the instrument voice — giant title, logo, [ labels ] */
+  --font-sans: 'Inter Tight', -apple-system, 'Helvetica Neue', Arial, sans-serif;
+  --font-dots: 'Doto', 'Inter Tight', sans-serif;   /* numbers only, ROND 100 · wght 700 */
+
+  --t-giant:   calc(var(--u) * 144); --lh-giant: .74;     --tr-giant: -.01em;   /* Oxanium 300, the hero's big line (v4: 233 / φ) */
+  --t-title:   calc(var(--u) * 89);  --lh-title: 1;       --tr-title: -.04em;
+  --t-display: calc(var(--u) * 55);  --lh-display: 1;     --tr-display: -.035em;
+  --t-heading: calc(var(--u) * 34);  --lh-heading: 1.236; --tr-heading: -.025em;
+  --t-body:    calc(var(--u) * 21);  --lh-body: 1.618;    --tr-body: -.01em;
+  --t-small:   calc(var(--u) * 13);  --lh-small: 1.618;   --tr-small: 0;
+  --tr-wordmark: .02em;               /* the logo "TESLA": Oxanium 500 at 34 */
+  --tr-label: .04em;                  /* Oxanium 13 caps [ labels ] */
+
+  /* — shape — */
+  --r-btn: var(--f5);
+  --r-panel: var(--f13);
+  --btn-h: var(--f55);
+  --btn-w: var(--f233);               /* 233 : 55 ≈ φ³ */
+  --gutter: var(--f55);
+  --edge: calc(var(--u) * 16);        /* everything flush to the edges at 16 — the user's number, the one non-Fibonacci length */
+  --ring: calc(var(--u) * 377);       /* the tick ring: Ø 377, 89 ticks × 21, the START disc Ø 144 */
+  --disc: calc(var(--u) * 144);
+
+  /* — motion: two patterns — */
+  --ease-expo: cubic-bezier(.16, 1, .3, 1);
+  --ease-in: cubic-bezier(.55, 0, 1, .45);   /* stage 8: things leaving toward the camera (the launch) */
+  --dur-in: .89s;       /* hero entrance */
+  --stagger: 89ms;
+  --in-blur: 13px;
+  --in-y: 21px;
+  --dur-press: .144s;   /* button press */
+}
+
+/* stage 9 — phones. Portrait: one design pixel is 1/430 of the width (components keep about their desktop size in
+   px and the layouts are re-composed in style.css). Short landscape: the whole desktop frame scales to fit the height.
+   On both, text never drops below readable. The desktop range is untouched. */
+@media (max-width: 767px) and (orientation: portrait) {
+  :root { --u: calc(100vw / 430); }
+}
+@media (max-height: 520px) and (orientation: landscape) {
+  :root { --u: min(calc(100vw / 1470), calc(100dvh / 956)); }
+}
+@media (max-width: 767px) and (orientation: portrait), (max-height: 520px) and (orientation: landscape) {
+  :root {
+    --t-small: max(11px, calc(var(--u) * 13));
+    --t-body: max(13px, calc(var(--u) * 21));
+    --t-heading: max(14px, calc(var(--u) * 34));
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :root { --dur-in: 0s; --stagger: 0ms; --dur-press: 0s; }
+}
